@@ -24,6 +24,9 @@ class AnsiToHtmlConverterTest extends TestCase
         $this->assertEquals($expected, $converter->convert($input));
     }
 
+    /**
+     * @return array<list<string>>
+     */
     public static function getConvertData(): array
     {
         return [
@@ -73,8 +76,8 @@ class AnsiToHtmlConverterTest extends TestCase
             // bold and background (high intensity)
             ['<span style="background-color: red; color: lightcyan">foo</span>', "\e[1;101;96mfoo\e[0m"],
 
-            // non valid unicode codepoints substitution (only available with PHP >= 5.4)
-            \PHP_VERSION_ID < 50400 ?: ['<span style="background-color: black; color: white">foo '."\xEF\xBF\xBD".'</span>', "foo \xF4\xFF\xFF\xFF"],
+            // non valid unicode codepoints substitution
+            ['<span style="background-color: black; color: white">foo '."\xEF\xBF\xBD".'</span>', "foo \xF4\xFF\xFF\xFF"],
 
             // codes in sequence - remember enabled styling like bold, italic, etc. (until we hit a reset)
             ['<span style="background-color: black; color: lightgreen">foo</span><span style="background-color: black; color: lightgreen">bar</span><span style="background-color: black; color: white">foo</span>', "\e[1;32mfoo\e[32mbar\e[mfoo"],

@@ -37,6 +37,11 @@ class AnsiExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
     public function ansiToHtml($string)
     {
         return $this->converter->convert($string);

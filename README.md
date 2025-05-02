@@ -93,7 +93,7 @@ $twig->addExtension(new AnsiExtension($converter));
 
 Then:
 
-```jinja
+```twig
 <html>
     <head>
         <style>

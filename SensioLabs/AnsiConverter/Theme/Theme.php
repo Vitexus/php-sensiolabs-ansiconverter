@@ -31,6 +31,9 @@ class Theme
         return implode("\n", $css);
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function asArray(): array
     {
         return [

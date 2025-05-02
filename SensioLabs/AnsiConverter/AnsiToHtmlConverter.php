@@ -18,7 +18,14 @@ use SensioLabs\AnsiConverter\Theme\Theme;
  */
 class AnsiToHtmlConverter
 {
+    /**
+     * @var array<string, string>
+     */
     protected array $inlineColors;
+
+    /**
+     * @var array<string>
+     */
     protected array $colorNames;
 
     public function __construct(
@@ -36,24 +43,25 @@ class AnsiToHtmlConverter
 
     public function convert(string $text): string
     {
-        // remove cursor movement sequences
-        $text = preg_replace('#\e\[(K|s|u|2J|2K|\d+(A|B|C|D|E|F|G|J|K|S|T)|\d+;\d+(H|f))#', '', $text);
-        // remove character set sequences
-        $text = preg_replace('#\e(\(|\))(A|B|[0-2])#', '', $text);
+        $text = preg_replace([
+            // remove cursor movement sequences
+            '#\e\[(K|s|u|2J|2K|\d+(A|B|C|D|E|F|G|J|K|S|T)|\d+;\d+(H|f))#',
+            // remove character set sequences
+            '#\e(\(|\))(A|B|[0-2])#',
+            // remove carriage return
+            '#^.*\r(?!\n)#m',
+        ], '', $text) ?? '';
 
-        $text = htmlspecialchars($text, \PHP_VERSION_ID >= 50400 ? \ENT_QUOTES | \ENT_SUBSTITUTE : \ENT_QUOTES, $this->charset);
-
-        // carriage return
-        $text = preg_replace('#^.*\r(?!\n)#m', '', $text);
+        $text = htmlspecialchars($text, \ENT_QUOTES | \ENT_SUBSTITUTE, $this->charset);
 
         $tokens = $this->tokenize($text);
 
         // a backspace remove the previous character but only from a text token
         foreach ($tokens as $i => $token) {
-            if ('backspace' == $token[0]) {
+            if ('backspace' === $token[0]) {
                 $j = $i;
                 while (--$j >= 0) {
-                    if ('text' == $tokens[$j][0] && '' !== $tokens[$j][1]) {
+                    if ('text' === $tokens[$j][0] && '' !== $tokens[$j][1]) {
                         $tokens[$j][1] = substr($tokens[$j][1], 0, -1);
 
                         break;
@@ -64,9 +72,9 @@ class AnsiToHtmlConverter
 
         $html = '';
         foreach ($tokens as $token) {
-            if ('text' == $token[0]) {
+            if ('text' === $token[0]) {
                 $html .= $token[1];
-            } elseif ('color' == $token[0]) {
+            } elseif ('color' === $token[0]) {
                 $html .= $this->convertAnsiToColor($token[1]);
             }
         }
@@ -78,9 +86,7 @@ class AnsiToHtmlConverter
         }
 
         // remove empty span
-        $html = preg_replace('#<span[^>]*></span>#', '', $html);
-
-        return $html;
+        return preg_replace('#<span[^>]*></span>#', '', $html) ?? '';
     }
 
     public function getTheme(): Theme
@@ -95,7 +101,7 @@ class AnsiToHtmlConverter
         $as = ''; // inline styles
         $cs = ''; // css classes
         $hi = false; // high intensity
-        if ('0' != $ansi && '' != $ansi) {
+        if ('0' !== $ansi && '' !== $ansi) {
             $options = explode(';', $ansi);
 
             foreach ($options as $key => $option) {
@@ -109,19 +115,21 @@ class AnsiToHtmlConverter
                     $hi = true;
                 } elseif ($option >= 100 && $option < 108) {
                     $bg = $option - 90;
-                } elseif (39 == $option) {
+                } elseif (39 === $option) {
                     $fg = 7;
-                } elseif (49 == $option) {
+                } elseif (49 === $option) {
                     $bg = 0;
                 } elseif ($option >= 22 && $option < 30) { // 21 has varying effects, best to ignored it
                     $unset = $option - 20;
 
                     foreach ($options as $i => $v) {
-                        if ($v == $unset) {
+                        $v = (int) $v;
+
+                        if ($v === $unset) {
                             unset($options[$i]);
                         }
 
-                        if (2 == $unset && 1 == $v) { // 22 also unsets bold
+                        if (2 === $unset && 1 === $v) { // 22 also unsets bold
                             unset($options[$i]);
                         }
 
@@ -171,6 +179,11 @@ class AnsiToHtmlConverter
         }
     }
 
+    /**
+     * Tokenizes the given text into an array of tokens.
+     *
+     * @return list<array<int, string>>
+     */
     protected function tokenize(string $text): array
     {
         $tokens = [];
@@ -184,7 +197,7 @@ class AnsiToHtmlConverter
             }
 
             foreach (explode(';', $matches[1][$i][0]) as $code) {
-                if ('0' == $code || '' == $code) {
+                if ('0' === $code || '' === $code) {
                     $codes = [];
                 } else {
                     // remove existing occurrence to avoid processing duplicate styles
@@ -196,7 +209,7 @@ class AnsiToHtmlConverter
                 $codes[] = $code;
             }
 
-            $tokens[] = ["\x08" == $match[0] ? 'backspace' : 'color', implode(';', $codes)];
+            $tokens[] = ["\x08" === $match[0] ? 'backspace' : 'color', implode(';', $codes)];
             $offset = $match[1] + \strlen($match[0]);
         }
 
