@@ -1,0 +1,5 @@
+/.git*                          export-ignore
+/.php-cs-fixer.dist.php         export-ignore
+/phpstan.neon.dist              export-ignore
+/phpunit.xml.dist               export-ignore
+/SensioLabs/AnsiConverter/Tests export-ignore
