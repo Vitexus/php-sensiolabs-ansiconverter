@@ -1,4 +1,8 @@
 parameters:
-    level: 3
+    level: 9
     paths:
         - SensioLabs
+    ignoreErrors:
+        - 
+            message: '#Method [a-zA-Z0-9\\_]+Test::[a-zA-Z0-9]+\(\) has no return type specified.#'
+            path: SensioLabs/AnsiConverter/Tests/*
