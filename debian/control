@@ -1,0 +1,21 @@
+Source: php-sensiolabs-ansiconverter
+Section: php
+Priority: optional
+Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
+Build-Depends:
+ debhelper-compat (= 13),
+Standards-Version: 4.7.0
+Homepage: https://github.com/sensiolabs/ansi-to-html
+Rules-Requires-Root: no
+Vcs-Git: https://github.com/Vitexus/php-sensiolabs-ansiconverter.git
+Vcs-Browser: https://github.com/Vitexus/php-sensiolabs-ansiconverter
+
+Package: php-sensiolabs-ansiconverter
+Architecture: all
+Depends:
+ ${misc:Depends},
+ php-common,
+Description: Convert text with ANSI escape codes to HTML
+ A PHP library that converts text containing ANSI escape sequences into HTML.
+ It supports multiple color themes (Solarized, SolarizedXTerm, AnsiTheme)
+ and provides an optional Twig extension bridge for template integration.

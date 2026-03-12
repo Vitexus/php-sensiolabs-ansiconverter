@@ -1,0 +1,8 @@
+SensioLabs/AnsiConverter/AnsiToHtmlConverter.php usr/share/php/SensioLabs/AnsiConverter
+SensioLabs/AnsiConverter/Theme/SolarizedTheme.php usr/share/php/SensioLabs/AnsiConverter/Theme
+SensioLabs/AnsiConverter/Theme/SolarizedXTermTheme.php usr/share/php/SensioLabs/AnsiConverter/Theme
+SensioLabs/AnsiConverter/Theme/Theme.php usr/share/php/SensioLabs/AnsiConverter/Theme
+SensioLabs/AnsiConverter/Theme/AnsiTheme.php usr/share/php/SensioLabs/AnsiConverter/Theme
+SensioLabs/AnsiConverter/Bridge/Twig/AnsiExtension.php usr/share/php/SensioLabs/AnsiConverter/Bridge/Twig
+debian/autoload.php usr/share/php/SensioLabs/AnsiConverter
+composer.json usr/share/php/SensioLabs/AnsiConverter

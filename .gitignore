@@ -1,3 +1,9 @@
 composer.lock
 /vendor/
 .phpunit.cache
+debian/debhelper-build-stamp
+debian/files
+debian/php-sensiolabs-ansiconverter.debhelper.log
+debian/php-sensiolabs-ansiconverter.substvars
+debian/.debhelper/
+debian/php-sensiolabs-ansiconverter/

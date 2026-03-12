@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_test:
+
+override_dh_install:
+	dh_install
+	install -m0755 -d debian/php-sensiolabs-ansiconverter/usr/share/pkg-php-tools/autoloaders
+	echo 'sensiolabs ansi-to-html SensioLabs/AnsiConverter/autoload.php' > debian/php-sensiolabs-ansiconverter/usr/share/pkg-php-tools/autoloaders/php-sensiolabs-ansiconverter
