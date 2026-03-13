@@ -2,7 +2,7 @@
 
 // Current version of this Pipeline https://raw.githubusercontent.com/VitexSoftware/multiflexi-buildimages/refs/heads/main/Test/multiflexi-halloworld/Jenkinsfile
 
-String[] distributions = ['debian:bookworm', 'debian:trixie', 'debian:forky', 'ubuntu:jammy', 'ubuntu:noble']
+String[] distributions = ['debian:bookworm', 'debian:trixie', 'debian:forky', 'ubuntu:jammy', 'ubuntu:noble', 'ubuntu:resolute']
 
 String vendor = 'vitexsoftware'
 String imagePrefix = 'multiflexi-'
@@ -45,7 +45,7 @@ distributions.each { distro ->
                     buildVer = version + '.' + env.BUILD_NUMBER  + '~' + distroCode
                 }
                 stage('Build ' + distroName) {
-                    buildImage.inside {
+                    buildImage.inside('--init') {
                         sh 'dch -b -v ' + buildVer  + ' "' + env.BUILD_TAG  + '"'
                         sh 'sudo apt-get update --allow-releaseinfo-change'
                         sh 'sudo chown jenkins:jenkins ..'
@@ -59,7 +59,7 @@ distributions.each { distro ->
                 }
 
                 stage('Test ' + distroName) {
-                    buildImage.inside {
+                    buildImage.inside('--init') {
                         def debconf_debug = 0 //Set to "5" or "developer" to debug debconf
                         sh 'cd $WORKSPACE/dist/debian/ ; dpkg-scanpackages . /dev/null > Packages; gzip -9c Packages > Packages.gz; cd $WORKSPACE'
                         sh 'echo "deb [trusted=yes] file://///$WORKSPACE/dist/debian/ ./" | sudo tee /etc/apt/sources.list.d/local.list'
@@ -76,7 +76,7 @@ distributions.each { distro ->
                 }
                 stage('Archive artifacts ' + distroName ) {
                     // Only run if previous stages (Build and Test) succeeded
-                    buildImage.inside {
+                    buildImage.inside('--init') {
                         // Archive all produced artifacts listed in debian/files
                         artifacts.each { deb_file ->
                             println "Archiving artifact: " + deb_file
